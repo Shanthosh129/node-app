@@ -2,9 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const helmet = require('helmet');
+const passport = require('passport');
 require('dotenv').config();
 
 const {connectDB} = require('./src/config/db');
+require('./src/config/Passport');
+
+const authRoutes = require('./src/routes/authRoutes');
 
 //Initialize Express app
 const app = express();
@@ -21,12 +25,16 @@ app.use(session({
     saveUninitialized:false,
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 //Connect to Database
 connectDB();
-
+//Routes
+ app.use('/auth', authRoutes);
 //Basic health check route
 app.get('/', (req, res) => {
-    res.send('API is running...');
+    res.send('GMAIL IMAP is running...');
 });
 
 //start server
